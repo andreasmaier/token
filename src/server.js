@@ -4,8 +4,11 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var UUID = require('node-uuid');
 var path = require('path');
+var _= require('lodash');
 
 server.listen(4004);
+
+var users = [];
 
 app.get('/', function (req, res) {
     res.sendFile(path.resolve(__dirname + '/../client/index.html'));
@@ -23,7 +26,7 @@ app.get('/*', function(req, res, next) {
 
     console.log('\t :: Express :: file requested : ' + file);
 
-    res.sendFile(path.resolve(__dirname + '/../client/' + file));
+    res.sendFile(path.resolve(__dirname + '/../admin/' + file));
 });
 
 io.on('connection', function (socket) {
