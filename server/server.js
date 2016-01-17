@@ -27,7 +27,7 @@ app.get('/*', function(req, res, next) {
 });
 
 io.on('connection', function (socket) {
-    console.log('connected: ', socket);
+    console.log('New connection:');
 
     socket.userid = UUID();
 
