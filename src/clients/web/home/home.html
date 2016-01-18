@@ -1,9 +1,7 @@
 <div>
-    {{hello}}
     <form>
         <input type="text" ng-model="user.name" required/>
-        <input type="submit" ng-click="connect(user.name)" value="Connect" />
+        <input type="password" ng-model="user.password" required/>
+        <input type="submit" ng-click="connect(user.name, user.password)" value="Connect" />
     </form>
-
-    User {{ user.name }}
 </div>

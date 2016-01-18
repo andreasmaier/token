@@ -17,18 +17,23 @@ app.get('/', function (req, res) {
 });
 
 app.post('/login', function (req, res) {
-    console.log('User is logging in');
+    console.log('User is logging in', req.query);
 
-    var profile = {
-        first_name: 'John',
-        last_name: 'Doe',
-        email: 'john@doe.com',
-        id: 123
-    };
+    if(req.query.username === 'peter' && req.query.password === 'pass'){
+        var profile = {
+            first_name: 'John',
+            last_name: 'Doe',
+            email: 'john@doe.com',
+            id: 123
+        };
 
-    var token = jwt.sign(profile, jwtSecret, { expiresIn: 60*60*5 });
+        var token = jwt.sign(profile, jwtSecret, { expiresIn: 60*60*5 });
 
-    res.json({token: token});
+        res.json({token: token});
+    }
+    else {
+        res.status(401).send('user is not authorized');
+    }
 });
 
 //io.on('connection', function (socket) {

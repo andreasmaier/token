@@ -2,22 +2,19 @@ angular.module('token').controller('HomeController', function ($scope, $resource
     $scope.hello = 'Hey wazzup';
     $scope.user = {};
 
-    $scope.connect = function(user) {
+    $scope.connect = function(user, password) {
         console.log('connect called');
 
         var login = $resource('http://localhost:4004/login', {
-            username: 'peter',
-            password: '1234qwer'
+            username: user,
+            password: password
         });
-
-        var token = '';
 
         login.save().$promise.then(function (response) {
             console.log('successful login', response);
-            token = response.token;
 
             var socket = io.connect('http://localhost:4004', {
-                query: 'token=' + token
+                query: 'token=' + response.token
             });
             socket.on('connect', function () {
                 console.log('authenticated');
