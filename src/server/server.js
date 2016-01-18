@@ -6,11 +6,12 @@ var path = require('path');
 var _= require('lodash');
 var jwt = require('jsonwebtoken');
 var socketioJwt = require('socketio-jwt');
+var users = require('./users');
 
 server.listen(4004);
 
-var users = [];
 var jwtSecret = 'super_secret_key';
+var loggedinUsers = [];
 
 app.get('/', function (req, res) {
     res.sendFile(path.resolve(__dirname + '/../../www/index.html'));
@@ -19,15 +20,24 @@ app.get('/', function (req, res) {
 app.post('/login', function (req, res) {
     console.log('User is logging in', req.query);
 
-    if(req.query.username === 'peter' && req.query.password === 'pass'){
+    if(users[req.query.username] && users[req.query.username].password === req.query.password){
+        var user = users[req.query.username];
+
         var profile = {
-            first_name: 'John',
-            last_name: 'Doe',
-            email: 'john@doe.com',
-            id: 123
+            first_name: user.firstName,
+            last_name: user.lastName,
+            email: user.email,
+            id: user.id
         };
 
         var token = jwt.sign(profile, jwtSecret, { expiresIn: 60*60*5 });
+
+        if(loggedinUsers.indexOf(req.query.username) < 0) {
+            loggedinUsers.push(req.query.username);
+        }
+        else {
+            console.log('user was already logged in');
+        }
 
         res.json({token: token});
     }
@@ -35,13 +45,6 @@ app.post('/login', function (req, res) {
         res.status(401).send('user is not authorized');
     }
 });
-
-//io.on('connection', function (socket) {
-//    socket.emit('news', { hello: 'world' });
-//    socket.on('my other event', function (data) {
-//        console.log(data);
-//    });
-//});
 
 app.get('/*', function(req, res, next) {
     var file = req.params[0];
@@ -62,6 +65,9 @@ io.on('connection', function (socket) {
     socket.userid = UUID();
 
     socket.emit('onconnected', { id: socket.userid } );
+    socket.emit('users', _.map(loggedinUsers, function (user) {
+        return { firstName: users[user].firstName, lastName: users[user].lastName };
+    }));
 
     console.log('\t socket.io :: player ' + socket.userid + ' connected');
 

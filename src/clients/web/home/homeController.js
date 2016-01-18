@@ -1,6 +1,7 @@
 angular.module('token').controller('HomeController', function ($scope, $resource) {
     $scope.hello = 'Hey wazzup';
     $scope.user = {};
+    $scope.connectedUsers = [];
 
     $scope.connect = function(user, password) {
         console.log('connect called');
@@ -25,9 +26,12 @@ angular.module('token').controller('HomeController', function ($scope, $resource
             socket.on('onconnected', function (data) {
                 console.log('Connected successfully to the socket.io server. My server side ID is ' + data.id);
             });
-            socket.on('news', function (data) {
-                console.log(data);
-                socket.emit('my other event', {my: 'data'});
+            socket.on('users', function (data) {
+                console.log('received live users:', data);
+
+                $scope.connectedUsers = data;
+
+                $scope.$apply($scope.connectedUsers);
             });
         }).catch(function (error) {
             console.log('error during login', error);
