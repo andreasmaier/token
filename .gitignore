@@ -1,2 +1,4 @@
 node_modules/
-src/admin/bower_components/
+src/clients/bower_components/
+
+www/

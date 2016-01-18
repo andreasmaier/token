@@ -1,0 +1,9 @@
+<div>
+    {{hello}}
+    <form>
+        <input type="text" ng-model="user.name" required/>
+        <input type="submit" ng-click="connect(user.name)" value="Connect" />
+    </form>
+
+    User {{ user.name }}
+</div>
