@@ -28,8 +28,9 @@ app.post('/login', function (req, res) {
         var user = users[req.query.username];
 
         var profile = {
-            first_name: user.firstName,
-            last_name: user.lastName,
+            username: req.query.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
             email: user.email,
             id: user.id
         };
@@ -61,17 +62,16 @@ app.get('/*', function (req, res, next) {
     res.sendFile(path.resolve(__dirname + '/../../www/' + file));
 });
 
-io.set('authorization', socketioJwt.authorize({
+io.use(socketioJwt.authorize({
     secret: jwtSecret,
     handshake: true
 }));
 
 io.on('connection', function (socket) {
-    log.debug('New connection:');
+    log.debug('New connection:', socket.decoded_token);
 
-    socket.userid = UUID();
-
-    socket.emit('onconnected', {id: socket.userid});
+    socket.internalId = UUID();
+    socket.emit('onconnected', {id: socket.internalId});
 
     io.emit('users', _.map(loggedinUsers, function (user) {
         return {firstName: users[user].firstName, lastName: users[user].lastName};
@@ -80,22 +80,27 @@ io.on('connection', function (socket) {
     log.info('\t socket.io :: player ' + socket.userid + ' connected');
 
     socket.on('disconnect', function () {
+        loggedinUsers = _.filter(loggedinUsers, function (user) {
+            return user !== socket.decoded_token.username;
+        });
+
         io.emit('users', _.map(loggedinUsers, function (user) {
             return {firstName: users[user].firstName, lastName: users[user].lastName};
         }));
 
-        log.info('\t socket.io :: client disconnected ' + socket.userid);
+        log.info('\t socket.io :: client disconnected ' + socket.internalId);
     });
 
     socket.on('requestCreateGame', function (data) {
         log.info('game creation requested', data);
 
-        _.filter(users, function (user) {
+        var user = _.filter(users, function (user) {
             return user.id === data.userId;
         });
 
-        game = gameFactory.create({
-            id: 123
+        var game = gameFactory.create({
+            id: user.id,
+            username: user.username
         });
 
         io.emit('lobby', {

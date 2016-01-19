@@ -6,8 +6,9 @@ angular.module('token').factory('UserService', function (jwtHelper) {
             var profile = jwtHelper.decodeToken(jwt);
 
             user = {
-                firstName: profile.first_name,
-                lastName: profile.last_name,
+                username: profile.username,
+                firstName: profile.firstName,
+                lastName: profile.lastName,
                 id: profile.id,
                 email: profile.email
             }

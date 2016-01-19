@@ -10,11 +10,18 @@
 
     <div>
         Available games:
-        <ul>
-            <li ng-repeat="game in activeGames">
-                {{game.id}}
-            </li>
-        </ul>
+        <table>
+            <tr>
+                <th>Player 1 (Creator)</th>
+                <th>Player 2</th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="game in activeGames">
+                <td>{{game.players[0].username}}</td>
+                <td></td>
+                <td><button>Join</button></td>
+            </tr>
+        </table>
     </div>
 
     <button ng-click="createGame();">Create Game</button>
