@@ -21,13 +21,12 @@ angular.module('token.connection', []).factory('SocketService', function (socket
                     socketId = data.id;
                 });
 
-            var tokenSocket = socketFactory({
+            tokenSocket = socketFactory({
                 ioSocket: _socket
             });
 
             tokenSocket.forward('lobby');
             tokenSocket.forward('users');
-            tokenSocket.forward('lobby');
 
             return tokenSocket;
         },

@@ -98,7 +98,7 @@ io.on('connection', function (socket) {
             id: 123
         });
 
-        socket.emit('lobby', {
+        io.emit('lobby', {
             eventType: 'GAME_CREATED',
             data: {
                 game: game
