@@ -9,6 +9,12 @@ angular.module('token').controller('LobbyController', function ($log, $scope, $r
         SocketService.getSocket().emit('requestCreateGame');
     };
 
+    $scope.joinGame = function (game) {
+        $log.debug('join game clicked');
+
+        SocketService.getSocket().emit('requestCreateGame', { game: game });
+    };
+
     $scope.$on('socket:users', function (ev, data) {
         $log.debug('received live users in lobby:', data);
 

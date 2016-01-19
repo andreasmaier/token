@@ -7,22 +7,24 @@ var _ = require('lodash');
 var jwt = require('jsonwebtoken');
 var socketioJwt = require('socketio-jwt');
 var users = require('./users');
-var gameFactory = require('./game/gameFactory');
 var log = require('winston');
+
+var GameCreationHandler = require('./game/gameCreationHandler');
+var ConnectionHandler = require('./connection/connectionHandler');
+var LoggedInUsers = require('./connection/userSTore');
 
 log.level = 'info';
 
 server.listen(4004);
 
 var jwtSecret = 'super_secret_key';
-var loggedinUsers = [];
 
 app.get('/', function (req, res) {
     res.sendFile(path.resolve(__dirname + '/../../www/index.html'));
 });
 
 app.post('/login', function (req, res) {
-    log.debug('User is logging in', req.query);
+    log.debug('\t User is logging in', req.query);
 
     if (users[req.query.username] && users[req.query.username].password === req.query.password) {
         var user = users[req.query.username];
@@ -37,12 +39,7 @@ app.post('/login', function (req, res) {
 
         var token = jwt.sign(profile, jwtSecret, {expiresIn: 60 * 60 * 5});
 
-        if (loggedinUsers.indexOf(req.query.username) < 0) {
-            loggedinUsers.push(req.query.username);
-        }
-        else {
-            log.info('user was already logged in');
-        }
+        LoggedInUsers.addUser(req.query.username);
 
         res.json({
             token: token,
@@ -73,38 +70,14 @@ io.on('connection', function (socket) {
     socket.internalId = UUID();
     socket.emit('onconnected', {id: socket.internalId});
 
-    io.emit('users', _.map(loggedinUsers, function (user) {
+    io.emit('users', _.map(LoggedInUsers.getLoggedInUsers(), function (user) {
         return {firstName: users[user].firstName, lastName: users[user].lastName};
     }));
 
     log.info('\t socket.io :: player ' + socket.userid + ' connected');
 
-    socket.on('disconnect', function () {
-        loggedinUsers = _.filter(loggedinUsers, function (user) {
-            return user !== socket.decoded_token.username;
-        });
+    ConnectionHandler.onDisconnect(socket, io);
 
-        io.emit('users', _.map(loggedinUsers, function (user) {
-            return {firstName: users[user].firstName, lastName: users[user].lastName};
-        }));
-
-        log.info('\t socket.io :: client disconnected ' + socket.internalId);
-    });
-
-    socket.on('requestCreateGame', function (data) {
-        log.info('game creation requested', data);
-
-        var game = gameFactory.create({
-            id: socket.decoded_token.id,
-            username: socket.decoded_token.username
-        });
-
-        io.emit('lobby', {
-            eventType: 'GAME_CREATED',
-            data: {
-                game: game
-            }
-        });
-    });
+    GameCreationHandler.create(socket, io);
 });
 

@@ -19,7 +19,7 @@
             <tr ng-repeat="game in activeGames">
                 <td>{{game.players[0].username}}</td>
                 <td></td>
-                <td><button>Join</button></td>
+                <td><button ng-click="joinGame(game);">Join</button></td>
             </tr>
         </table>
     </div>
