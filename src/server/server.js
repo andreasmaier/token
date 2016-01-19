@@ -94,13 +94,9 @@ io.on('connection', function (socket) {
     socket.on('requestCreateGame', function (data) {
         log.info('game creation requested', data);
 
-        var user = _.filter(users, function (user) {
-            return user.id === data.userId;
-        });
-
         var game = gameFactory.create({
-            id: user.id,
-            username: user.username
+            id: socket.decoded_token.id,
+            username: socket.decoded_token.username
         });
 
         io.emit('lobby', {

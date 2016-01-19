@@ -6,7 +6,7 @@ angular.module('token').controller('LobbyController', function ($log, $scope, $r
     $scope.createGame = function () {
         $log.debug('create game clicked');
 
-        SocketService.getSocket().emit('requestCreateGame', {user: $rootScope.userId});
+        SocketService.getSocket().emit('requestCreateGame');
     };
 
     $scope.$on('socket:users', function (ev, data) {
