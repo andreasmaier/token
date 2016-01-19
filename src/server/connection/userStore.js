@@ -1,6 +1,8 @@
-var loggedInUsers = [];
 var log = require('winston');
 var _ = require('lodash');
+var users = require('../users');
+
+var loggedInUsers = [];
 
 module.exports = {
     getLoggedInUsers: function () {
@@ -16,8 +18,12 @@ module.exports = {
         }
     },
 
+    getUser: function (username) {
+        return users[username];
+    },
+
     removeUser: function (username) {
-        loggedInUsers = _.filter(LoggedinUsers.getLoggedInUsers(), function (user) {
+        loggedInUsers = _.filter(loggedInUsers, function (user) {
             return user !== username;
         });
     }

@@ -1,9 +1,8 @@
 var _ = require('lodash');
 var UUID = require('node-uuid');
+var GameStore = require('./gameStore');
 
 module.exports = {
-    games: [],
-
     create: function (createdBy) {
         // check that user does not have another game
 
@@ -12,7 +11,7 @@ module.exports = {
             players: [createdBy]
         };
 
-        this.games.push(game);
+        GameStore.addGame(game);
 
         return game;
     }
