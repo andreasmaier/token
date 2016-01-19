@@ -1,0 +1,21 @@
+<div ng-controller="LobbyController">
+    <div>
+        Connected users:
+        <ul>
+            <li ng-repeat="connectedUser in connectedUsers">
+                {{connectedUser.firstName}} {{connectedUser.lastName}}
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        Available games:
+        <ul>
+            <li ng-repeat="game in games">
+                {{game.id}}
+            </li>
+        </ul>
+    </div>
+
+    <button ng-click="createGame();">Create Game</button>
+</div>

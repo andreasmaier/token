@@ -3,10 +3,14 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var UUID = require('node-uuid');
 var path = require('path');
-var _= require('lodash');
+var _ = require('lodash');
 var jwt = require('jsonwebtoken');
 var socketioJwt = require('socketio-jwt');
 var users = require('./users');
+var gameFactory = require('./game/gameFactory');
+var log = require('winston');
+
+log.level = 'info';
 
 server.listen(4004);
 
@@ -18,9 +22,9 @@ app.get('/', function (req, res) {
 });
 
 app.post('/login', function (req, res) {
-    console.log('User is logging in', req.query);
+    log.debug('User is logging in', req.query);
 
-    if(users[req.query.username] && users[req.query.username].password === req.query.password){
+    if (users[req.query.username] && users[req.query.username].password === req.query.password) {
         var user = users[req.query.username];
 
         var profile = {
@@ -30,26 +34,29 @@ app.post('/login', function (req, res) {
             id: user.id
         };
 
-        var token = jwt.sign(profile, jwtSecret, { expiresIn: 60*60*5 });
+        var token = jwt.sign(profile, jwtSecret, {expiresIn: 60 * 60 * 5});
 
-        if(loggedinUsers.indexOf(req.query.username) < 0) {
+        if (loggedinUsers.indexOf(req.query.username) < 0) {
             loggedinUsers.push(req.query.username);
         }
         else {
-            console.log('user was already logged in');
+            log.info('user was already logged in');
         }
 
-        res.json({token: token});
+        res.json({
+            token: token,
+            userId: profile.id
+        });
     }
     else {
         res.status(401).send('user is not authorized');
     }
 });
 
-app.get('/*', function(req, res, next) {
+app.get('/*', function (req, res, next) {
     var file = req.params[0];
 
-    console.log('\t :: Express :: file requested : ' + file);
+    log.verbose('\t :: Express :: file requested : ' + file);
 
     res.sendFile(path.resolve(__dirname + '/../../www/' + file));
 });
@@ -60,18 +67,43 @@ io.set('authorization', socketioJwt.authorize({
 }));
 
 io.on('connection', function (socket) {
-    console.log('New connection:');
+    log.debug('New connection:');
 
     socket.userid = UUID();
 
-    socket.emit('onconnected', { id: socket.userid } );
-    socket.emit('users', _.map(loggedinUsers, function (user) {
-        return { firstName: users[user].firstName, lastName: users[user].lastName };
+    socket.emit('onconnected', {id: socket.userid});
+
+    io.emit('users', _.map(loggedinUsers, function (user) {
+        return {firstName: users[user].firstName, lastName: users[user].lastName};
     }));
 
-    console.log('\t socket.io :: player ' + socket.userid + ' connected');
+    log.info('\t socket.io :: player ' + socket.userid + ' connected');
 
     socket.on('disconnect', function () {
-        console.log('\t socket.io :: client disconnected ' + socket.userid);
+        io.emit('users', _.map(loggedinUsers, function (user) {
+            return {firstName: users[user].firstName, lastName: users[user].lastName};
+        }));
+
+        log.info('\t socket.io :: client disconnected ' + socket.userid);
+    });
+
+    socket.on('requestCreateGame', function (data) {
+        log.info('game creation requested', data);
+
+        _.filter(users, function (user) {
+            return user.id === data.userId;
+        });
+
+        game = gameFactory.create({
+            id: 123
+        });
+
+        socket.emit('lobby', {
+            eventType: 'GAME_CREATED',
+            data: {
+                game: game
+            }
+        });
     });
 });
+

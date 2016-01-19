@@ -7,13 +7,17 @@
     "express": "^4.13.3",
     "jsonwebtoken": "^5.5.4",
     "socket.io": "^1.4.4",
-    "socketio-jwt": "^4.3.4"
+    "socketio-jwt": "^4.3.4",
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
+    "gulp-angular-filesort": "^1.1.1",
     "gulp-clean": "^0.3.1",
+    "gulp-inject": "^3.0.0",
     "main-bower-files": "^2.11.1",
-    "require-dir": "^0.3.0"
+    "require-dir": "^0.3.0",
+    "run-sequence": "^1.1.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

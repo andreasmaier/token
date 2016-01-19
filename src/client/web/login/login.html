@@ -1,16 +1,10 @@
-<div>
+<div ng-controller="LoginController">
+    Login:
+
     <form>
         <input type="text" ng-model="user.name" required autofocus/>
         <input type="password" ng-model="user.password" required/>
+
         <input type="submit" ng-click="connect(user.name, user.password)" value="Connect" />
     </form>
-
-    <div>
-        Connected users:
-        <ul>
-            <li ng-repeat="connectedUser in connectedUsers">
-                {{connectedUser.firstName}} {{connectedUser.lastName}}
-            </li>
-        </ul>
-    </div>
 </div>
