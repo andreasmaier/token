@@ -9,6 +9,6 @@ angular.module('token', [
 .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/login");
 })
-.run(function () {
-    console.log('running token app');
+.run(function ($log) {
+    $log.info('running token app');
 });

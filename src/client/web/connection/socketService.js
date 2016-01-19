@@ -1,4 +1,4 @@
-angular.module('token.connection', []).factory('SocketService', function (socketFactory, TokenService) {
+angular.module('token.connection', []).factory('SocketService', function ($log, socketFactory, TokenService) {
     var tokenSocket;
     var socketId;
 
@@ -10,13 +10,13 @@ angular.module('token.connection', []).factory('SocketService', function (socket
 
             _socket
                 .on('connect', function () {
-                    console.log('websocket connected');
+                    $log.info('websocket connected');
                 })
                 .on('disconnect', function () {
-                    console.log('disconnected')
+                    $log.info('disconnected')
                 })
                 .on('onconnected', function (data) {
-                    console.log('Connected successfully to the socket.io server. My server side ID is ' + data.id);
+                    $log.debug('Connected successfully to the socket.io server. My server side ID is ' + data.id);
 
                     socketId = data.id;
                 });
