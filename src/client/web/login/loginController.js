@@ -1,5 +1,5 @@
 angular.module('token.login').controller('LoginController',
-    function ($scope, $resource, $rootScope, $state, SocketService, TokenService) {
+    function ($scope, $resource, $rootScope, $state, SocketService, toastr, TokenService, UserService) {
         $scope.user = {};
 
         $scope.connect = function (user, password) {
@@ -10,25 +10,22 @@ angular.module('token.login').controller('LoginController',
                 password: password
             });
 
-            login.save().$promise.then(function (response) {
-                console.log('successful login', response);
-                $rootScope.userId = response.userId;
+            login.save().$promise
+                .then(function (response) {
+                    console.log('Successful login', response);
+                    TokenService.setToken(response.token);
+                    UserService.setUser(TokenService.getToken());
 
-                TokenService.setToken(response.token);
+                    SocketService.connect();
 
-                SocketService.connect();
+                    toastr.success('Hey ' + UserService.getUser().firstName + '! Login successful');
 
-                $scope.$on('socket:onconnected', function (ev, data) {
-                    console.log('Connected successfully to the socket.io server. My server side ID is ' + data.id);
+                    $state.go('lobby');
+                })
+                .catch(function (error) {
+                    console.log('Error during login', error);
 
-                    $rootScope.socketId = data.id;
-                    $scope.connected = true;
+                    toastr.error('Error during login!');
                 });
-
-                $state.go('lobby');
-
-            }).catch(function (error) {
-                console.log('error during login', error);
-            });
         };
     });

@@ -15,7 +15,11 @@ gulp.task('inject-js', ['copy-js'], function () {
             gulp.src(bowerFiles(), {read: false}), {
                 name: 'bower',
                 transform: function (filepath, file) {
-                    return '<script src="/lib/' + filepath.split('/').pop() + '"></script>'
+                    if(filepath.split('.').pop() === 'css') {
+                        return '<link rel="stylesheet" type="text/css" href="/lib/' + filepath.split('/').pop() +'">';
+                    } else {
+                        return '<script src="/lib/' + filepath.split('/').pop() + '"></script>'
+                    }
                 }
             }
         ))

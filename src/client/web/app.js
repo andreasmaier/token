@@ -1,5 +1,9 @@
 angular.module('token', [
-    'ngResource', 'btford.socket-io', 'ui.router',
+    'angular-jwt',
+    'btford.socket-io',
+    'ngResource',
+    'toastr',
+    'ui.router',
     'token.connection', 'token.lobby', 'token.login'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {

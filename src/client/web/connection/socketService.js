@@ -1,5 +1,6 @@
 angular.module('token.connection', []).factory('SocketService', function (socketFactory, TokenService) {
     var tokenSocket;
+    var socketId;
 
     return {
         connect: function () {
@@ -7,21 +8,24 @@ angular.module('token.connection', []).factory('SocketService', function (socket
                 query: 'token=' + TokenService.getToken()
             });
 
-            _socket.on('connect', function () {
-                console.log('websocket connected');
-            });
-            _socket.on('disconnect', function () {
-                console.log('disconnected')
-            });
+            _socket
+                .on('connect', function () {
+                    console.log('websocket connected');
+                })
+                .on('disconnect', function () {
+                    console.log('disconnected')
+                })
+                .on('onconnected', function (data) {
+                    console.log('Connected successfully to the socket.io server. My server side ID is ' + data.id);
+
+                    socketId = data.id;
+                });
 
             var tokenSocket = socketFactory({
                 ioSocket: _socket
             });
 
             tokenSocket.forward('lobby');
-            tokenSocket.forward('connect');
-            tokenSocket.forward('disconnect');
-            tokenSocket.forward('onconnected');
             tokenSocket.forward('users');
             tokenSocket.forward('lobby');
 
@@ -30,6 +34,10 @@ angular.module('token.connection', []).factory('SocketService', function (socket
 
         getSocket: function () {
             return tokenSocket;
+        },
+
+        getSocketId: function () {
+            return socketId;
         }
     }
 });
