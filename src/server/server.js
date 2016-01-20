@@ -11,7 +11,7 @@ var log = require('winston');
 
 var GameActionHandler = require('./game/gameActionHandler');
 var ConnectionHandler = require('./connection/connectionHandler');
-var LoggedInUsers = require('./connection/userSTore');
+var LoggedInUsers = require('./connection/userStore');
 
 log.level = 'info';
 
@@ -74,7 +74,7 @@ io.on('connection', function (socket) {
         return {firstName: users[user].firstName, lastName: users[user].lastName};
     }));
 
-    log.info('\t socket.io :: player ' + socket.userid + ' connected');
+    log.info('\t socket.io :: player ' + socket.decoded_token.username + ' connected');
 
     ConnectionHandler.onDisconnect(socket, io);
     GameActionHandler.onCreate(socket, io);

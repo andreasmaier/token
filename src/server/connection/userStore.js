@@ -2,29 +2,40 @@ var log = require('winston');
 var _ = require('lodash');
 var users = require('../users');
 
-var loggedInUsers = [];
+var UserStore = function () {
+    var loggedInUsers = [];
 
-module.exports = {
-    getLoggedInUsers: function () {
+    this.getLoggedInUsers = function () {
         return loggedInUsers;
-    },
+    };
 
-    addUser: function (username) {
+    this.addUser = function (username) {
         if (loggedInUsers.indexOf(username) < 0) {
             loggedInUsers.push(username);
         }
         else {
             log.info('\t user "' + username + '" was already logged in');
         }
-    },
+    };
 
-    getUser: function (username) {
+    this.getUser = function (username) {
         return users[username];
-    },
+    };
 
-    removeUser: function (username) {
+    this.removeUser = function (username) {
         loggedInUsers = _.filter(loggedInUsers, function (user) {
             return user !== username;
         });
-    }
+    };
 };
+
+UserStore.instance = null;
+
+UserStore.getInstance = function () {
+    if (this.instance === null) {
+        this.instance = new UserStore();
+    }
+    return this.instance;
+};
+
+module.exports = UserStore.getInstance();
