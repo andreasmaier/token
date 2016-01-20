@@ -18,8 +18,8 @@ module.exports = {
     },
 
     onCreate: function (socket, io) {
-        socket.on('requestCreateGame', function (data) {
-            log.info('\t game creation requested', data);
+        socket.on('requestCreateGame', function () {
+            log.info('\t game creation requested by ', socket.decoded_token.username);
 
             var game = gameFactory.create({
                 id: socket.decoded_token.id,

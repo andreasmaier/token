@@ -1,5 +1,6 @@
 module.exports = {
     peter: {
+        username: 'peter',
         password: 'pass',
         firstName: 'Peter',
         lastName: 'Polunsky',
@@ -7,6 +8,7 @@ module.exports = {
         id: 123
     },
     karl: {
+        username: 'karl',
         password: 'pass',
         firstName: 'Karl',
         lastName: 'Kolunda',
@@ -14,6 +16,7 @@ module.exports = {
         id: 124
     },
     tom: {
+        username: 'tom',
         password: 'pass',
         firstName: 'Tom',
         lastName: 'Tomsen',
@@ -21,6 +24,7 @@ module.exports = {
         id: 127
     },
     mike: {
+        username: 'mike',
         password: 'pass',
         firstName: 'Mike',
         lastName: 'Mulligan',
@@ -28,6 +32,7 @@ module.exports = {
         id: 130
     },
     petra: {
+        username: 'petra',
         password: 'pass',
         firstName: 'Petra',
         lastName: 'Petkofsky',

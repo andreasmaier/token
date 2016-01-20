@@ -35,12 +35,13 @@ angular.module('token').controller('LobbyController', function ($log, $scope, $r
             $scope.activeGames = data.data.games;
         }
         else if(data.eventType === 'GAME_PLAYER_JOINED') {
-            $log.debug('player joined:', data.data.game.players);
-            var game = _.filter($scope.activeGames, function (game) {
+            $log.debug('player ', data.data.game.players[1], ' joined game', data.data.game.id);
+
+            var the_game = _.find($scope.activeGames, function (game) {
                 return game.id === data.data.game.id;
             });
 
-            game.players = data.data.game.players;
+            the_game.players = data.data.game.players;
         }
         else{
             $log.error('Unrecognized event:', data.eventType);

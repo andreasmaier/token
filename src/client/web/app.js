@@ -10,10 +10,7 @@ angular.module('token', [
     $urlRouterProvider.otherwise("/login");
 })
 .run(function ($log, $rootScope, $location, $state, TokenService) {
-    $rootScope.$on( '$stateChangeStart', function(e, toState  , toParams, fromState, fromParams) {
-
-        console.log('toState is', toState.name);
-
+    $rootScope.$on( '$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
         var isLogin = toState.name === "login";
         if(isLogin){
             return; // no need to redirect

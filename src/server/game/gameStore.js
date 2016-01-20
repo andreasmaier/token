@@ -19,7 +19,10 @@ module.exports = {
 
     addPlayer: function (game, player) {
         if(game.players.length < 2) {
-            game.players.push(player);
+            game.players.push({
+                id: player.id,
+                username: player.username
+            });
         }
     }
 };
