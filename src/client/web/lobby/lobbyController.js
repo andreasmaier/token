@@ -25,6 +25,12 @@ angular.module('token').controller('LobbyController',
         SocketService.getSocket().emit('requestStartGame', {gameId: game.id});
     };
 
+    $scope.showJoinButton = function (game) {
+        var playerIsNotInGame = _.map(game.players, 'username').indexOf($scope.user.username) < 0;
+
+        return game.players.length < 2 && playerIsNotInGame;
+    };
+
     $scope.$on('socket:users', function (ev, data) {
         $log.debug('received live users in lobby:', data);
 
