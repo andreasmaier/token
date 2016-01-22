@@ -19,6 +19,7 @@
     "angular-socket-io": "~0.7.0",
     "angular-jwt": "~0.0.9",
     "angular-toastr": "~1.6.0",
-    "lodash": "~4.0.0"
+    "lodash": "~4.0.0",
+    "phaser": "~2.4.4"
   }
 }

@@ -79,6 +79,7 @@ io.on('connection', function (socket) {
     ConnectionHandler.onDisconnect(socket, io);
     GameActionHandler.onCreate(socket, io);
     GameActionHandler.onJoin(socket, io);
+    GameActionHandler.onStart(socket, io);
     GameActionHandler.onIndex(socket);
 });
 

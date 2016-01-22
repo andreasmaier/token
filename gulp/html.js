@@ -12,7 +12,13 @@ gulp.task('inject-js', ['copy-js'], function () {
             }
         ))
         .pipe(inject(
-            gulp.src(bowerFiles(), {read: false}), {
+            gulp.src(bowerFiles({
+                "overrides": {
+                    "phaser": {
+                        "main": ["build/phaser.min.js", "build/phaser.map"]
+                    }
+                }
+            }), {read: false}), {
                 name: 'bower',
                 transform: function (filepath, file) {
                     if(filepath.split('.').pop() === 'css') {

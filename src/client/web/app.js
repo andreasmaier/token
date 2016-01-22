@@ -4,7 +4,7 @@ angular.module('token', [
     'ngResource',
     'toastr',
     'ui.router',
-    'token.connection', 'token.lobby', 'token.login'
+    'token.connection', 'token.game', 'token.lobby', 'token.login'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/login");

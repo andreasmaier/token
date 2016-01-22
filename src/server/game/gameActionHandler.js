@@ -51,5 +51,22 @@ module.exports = {
                 }
             });
         });
+    },
+
+    onStart: function (socket, io) {
+        socket.on('requestStartGame', function (data) {
+            log.info('\t Start of game', data.gameId, ' requested');
+
+            var game = GameStore.getGame(data.gameId);
+
+            game.start();
+
+            io.emit('lobby', {
+                eventType: 'GAME_STARTED',
+                data: {
+                    game: game
+                }
+            });
+        });
     }
 };

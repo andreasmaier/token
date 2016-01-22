@@ -7,7 +7,13 @@ gulp.task('clean-js', function () {
 });
 
 gulp.task('copy-dependencies', ['clean-js'], function () {
-    return gulp.src(mainBowerFiles())
+    return gulp.src(mainBowerFiles({
+            "overrides": {
+                "phaser": {
+                    "main": ["build/phaser.min.js", "build/phaser.map"]
+                }
+            }
+        }))
         .pipe(gulp.dest('www/lib'));
 });
 
